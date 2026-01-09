@@ -190,9 +190,12 @@ with tab4:
     colA, colB = st.columns(2)
 
     #Festivos vs no festivos (ventas medias)
-    is_holiday = df["holiday_type"].notna()
-    hol = df.groupby(is_holiday, as_index=False)["sales"].mean()
-    hol.columns = ["is_holiday", "sales"]
+    hol = (
+        df.assign(is_holiday=df["holiday_type"].notna())
+          .groupby("is_holiday", as_index=False)["sales"]
+          .mean()
+    )
+
     colA.plotly_chart(
         px.bar(hol, x="is_holiday", y="sales", title="Ventas medias: festivo vs no festivo"),
         use_container_width=True
@@ -209,6 +212,7 @@ with tab4:
         )
     else:
         colB.info("No hay datos de dcoilwtico para graficar.")
+
 
 
 
