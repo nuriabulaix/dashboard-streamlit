@@ -8,11 +8,9 @@ st.title("📊 Dashboard de Ventas - Empresa Alimentación")
 @st.cache_data
 def load_data():
     #lee los dos CSV y se unen en uno solo
-    df = pd.concat(
-    [pd.read_csv("parte_1.zip", compression="zip"),
-     pd.read_csv("parte_2.zip", compression="zip")],
-    ignore_index=True
-)
+    df1 = pd.read_csv("parte_1.zip", compression="zip", low_memory=False)
+    df2 = pd.read_csv("parte_2.zip", compression="zip", low_memory=False)
+    df = pd.concat([df1, df2], ignore_index=True)
 
 
     # Si existe una columna "basura" típica, se quita
@@ -192,3 +190,4 @@ with tab4:
         )
     else:
         colB.info("No hay datos de dcoilwtico para graficar.")
+
