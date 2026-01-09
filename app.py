@@ -28,7 +28,13 @@ def load_data():
 
     return df
 
-df = load_data()
+try:
+    df = load_data()
+except Exception as e:
+    st.error("Error cargando datos. Mira el mensaje debajo:")
+    st.exception(e)
+    st.stop()
+
 
 
 def top10(df_in, group_col, value_col="sales"):
@@ -190,4 +196,5 @@ with tab4:
         )
     else:
         colB.info("No hay datos de dcoilwtico para graficar.")
+
 
