@@ -12,21 +12,19 @@ def load_data():
     "onpromotion","holiday_type","dcoilwtico"
     ]
     DTYPE = {
-        "store_nbr": "int16",
-        "onpromotion": "int16",
-        "transactions": "int32",
-        "sales": "float32",
-        "dcoilwtico": "float32",
-        "family": "category",
-        "state": "category",
-        "holiday_type": "category",
+    "store_nbr": "int16",
+    "sales": "float32",
+    "dcoilwtico": "float32",
+    "family": "category",
+    "state": "category",
+    "holiday_type": "category",
     }
     
     df1 = pd.read_csv("parte_1.zip", compression="zip", usecols=USECOLS, dtype=DTYPE, low_memory=False)
     df2 = pd.read_csv("parte_2.zip", compression="zip", usecols=USECOLS, dtype=DTYPE, low_memory=False)
     df = pd.concat([df1, df2], ignore_index=True)
-
-
+    df["transactions"] = pd.to_numeric(df["transactions"], errors="coerce").fillna(0).astype("int32")
+    df["onpromotion"] = pd.to_numeric(df["onpromotion"], errors="coerce").fillna(0).astype("int32")
 
     # Si existe una columna "basura" típica, se quita
     if "Unnamed: 0" in df.columns:
@@ -211,6 +209,7 @@ with tab4:
         )
     else:
         colB.info("No hay datos de dcoilwtico para graficar.")
+
 
 
 
