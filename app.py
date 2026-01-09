@@ -7,10 +7,25 @@ st.title("📊 Dashboard de Ventas - Empresa Alimentación")
 
 @st.cache_data
 def load_data():
-    #lee los dos CSV y se unen en uno solo
-    df1 = pd.read_csv("parte_1.zip", compression="zip", low_memory=False)
-    df2 = pd.read_csv("parte_2.zip", compression="zip", low_memory=False)
+    USECOLS = [
+    "date","sales","transactions","store_nbr","family","state",
+    "onpromotion","holiday_type","dcoilwtico"
+    ]
+    DTYPE = {
+        "store_nbr": "int16",
+        "onpromotion": "int16",
+        "transactions": "int32",
+        "sales": "float32",
+        "dcoilwtico": "float32",
+        "family": "category",
+        "state": "category",
+        "holiday_type": "category",
+    }
+    
+    df1 = pd.read_csv("parte_1.zip", compression="zip", usecols=USECOLS, dtype=DTYPE, low_memory=False)
+    df2 = pd.read_csv("parte_2.zip", compression="zip", usecols=USECOLS, dtype=DTYPE, low_memory=False)
     df = pd.concat([df1, df2], ignore_index=True)
+
 
 
     # Si existe una columna "basura" típica, se quita
@@ -177,9 +192,9 @@ with tab4:
     colA, colB = st.columns(2)
 
     #Festivos vs no festivos (ventas medias)
-    tmp = df.copy()
-    tmp["is_holiday"] = tmp["holiday_type"].notna()
-    hol = tmp.groupby("is_holiday", as_index=False)["sales"].mean()
+    is_holiday = df["holiday_type"].notna()
+    hol = df.groupby(is_holiday, as_index=False)["sales"].mean()
+    hol.columns = ["is_holiday", "sales"]
     colA.plotly_chart(
         px.bar(hol, x="is_holiday", y="sales", title="Ventas medias: festivo vs no festivo"),
         use_container_width=True
@@ -196,5 +211,6 @@ with tab4:
         )
     else:
         colB.info("No hay datos de dcoilwtico para graficar.")
+
 
 
